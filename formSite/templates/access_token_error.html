@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+<head>
+    <title>Result</title>
+    <meta name="viewport" content="width=device-width",initial-scale="1.0">
+    <style>
+    body {
+        background-color:darkslateblue;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Set the container to occupy the full viewport height */
+    }
+    
+    .container {
+        background-color:lightslategrey;
+        width: 350px; /* Adjust this value as per your design */
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    button {
+        width: 100%;
+        background-color: green;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+            <h2>
+                Hmm! You Provided The Invalid Access ToKen !
+            </h2>
+            <p>Please Provide a Valid One, Click 'Re-enter' to Enter it again</p>
+
+            <button type="button" onclick="homepage()">Re-enter</button>
+            
+        </form>
+    </div>
+    <script>
+        function homepage(){
+            window.location.href ="http://127.0.0.1:8000/"
+        }
+    </script>
+</body>
+</html>

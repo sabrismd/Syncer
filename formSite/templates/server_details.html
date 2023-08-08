@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+<head>
+    <title>Syncer [ Mysql--Smarstheet]</title>
+    <meta name="viewport" content="width=device-width",initial-scale="1.0">
+    <style>
+    body {
+        background-color:darkslateblue;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Set the container to occupy the full viewport height */
+    }
+    .container{
+        background-color:lightslategrey;
+        width: 300px; /* Adjust this value as per your design */
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Optional: Add some styles to improve the appearance of the form elements */
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    button {
+        width: 100%;
+        background-color: green;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        {% block content %}
+        <p>Give Us Your Mysql Necessary Connection Credentials</p>
+        <form action="server_connection_status" autocomplete="off">
+            {% csrf_token %}
+            <label for="hostname">hostname:</label>
+            <input type="text" id="hostname" name="hostname" required>
+            <label for="username">username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">password:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="databasename">databasename:</label>
+            <input type="text" id="databasename" name="databasename" required>
+            <button type="submit">Submit</button>
+        </form>
+        {% endblock %}
+    </div>
+</body>
+</html>
