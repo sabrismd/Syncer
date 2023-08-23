@@ -24,7 +24,9 @@ urlpatterns = [
     path('display_token/', views.display_token),
     path('display_token/sheet_user/',views.display_sheet_user),
     path('server_details/',views.server_details),
-    path('server_details/server_connection_status',views.server_connection),
+    path('server_details/server_connection_status/',views.server_connection),
+    path('database_details/',views.tables),
+    path('database_details/selected/',views.selected)
 ]
 
 

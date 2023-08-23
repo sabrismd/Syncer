@@ -1,8 +1,10 @@
-import subprocess
+import mysql.connector as mc
 
+connection = mc.connect(host="localhost", user="root", password="S@bri2019", db="smartsheets")
+cursor = connection.cursor()
+cursor.execute("SHOW TABLES")
 
-def stop_mysql_server():
-    subprocess.run('C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqladmin shutdown', shell=True)
-
-if __name__ == '__main__':
-    stop_mysql_server()
+tables = {'table': []}
+for x in cursor:
+    tables['table'].append(x[0])
+print(tables)
