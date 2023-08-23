@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>server-status</title>
+    </head>
+    <body>
+    <form action="selected">
+        <div style="
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 20px;
+    column-gap: 20px;
+    background-color: darkviolet;
+    ">
+        <div style="border: 1px solid black;
+        padding-left: 20px;
+        background-color: white;">
+            <h1>Your Tables</h1>
+            {% for tab in tables.table %}
+            <input type="radio" name="tab" value={{tab}}/>{{tab}}<br>
+            {% endfor %}
+        </div>
+        <div style="border: 1px solid black;
+        padding-left: 20px;
+        background-color: white;">
+            <h2>Your Sheets</h2>
+            {% for sh in sheets.sheet %}
+            <input type="radio" name="sh" value={{sh}}/>{{sh}}<br>
+            {% endfor %}
+        </div>
+    </div>
+    <input type="submit" value="SYN"/>
+    </form>
+    <script>
+        window.onload = function action(){
+            alert("To Sync .. Please Select Only One from Your Table and Please Select Only One from Your Sheets")
+            alert("Remember : You could Sync One By One")
+            alert("Please find the SYNC button in the bottom , To Process")
+        }
+    </script>
+
+    </body>
+</html>
