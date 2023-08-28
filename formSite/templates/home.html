@@ -2,7 +2,7 @@
 <html>
     {% load static %}
 <head>
-    <title>Syncer [ Mysql--Smarstheet]</title>
+    <title>Syncer [ Mysql--SmartSheet]</title>
     <meta name="viewport" content="width=device-width",initial-scale="1.0">
     <style>
     body {
@@ -39,7 +39,7 @@
 <body>
     <div class="container">
         {% block content %}
-        <form action="display_token" autocomplete="off">
+        <form action="display_token" autocomplete="off" method="post">
             {% csrf_token %}
             <label for="accesstoken">ACCESSTOKEN:</label>
             <input type="text" id="token" name="token" required>

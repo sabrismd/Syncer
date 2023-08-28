@@ -7,7 +7,7 @@
         <title>server-status</title>
     </head>
     <body>
-    <form action="selected">
+    <form action="selected" method="post">
         <div style="
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -20,7 +20,7 @@
         background-color: white;">
             <h1>Your Tables</h1>
             {% for tab in tables.table %}
-            <input type="radio" name="tab" value={{tab}}/>{{tab}}<br>
+            <input type="radio" name="tab" value="{{tab}}"/>{{tab}}<br>
             {% endfor %}
         </div>
         <div style="border: 1px solid black;
@@ -28,11 +28,11 @@
         background-color: white;">
             <h2>Your Sheets</h2>
             {% for sh in sheets.sheet %}
-            <input type="radio" name="sh" value={{sh}}/>{{sh}}<br>
+            <input type="radio" name="sh" value="{{sh}}"/>{{sh}}<br>
             {% endfor %}
         </div>
     </div>
-    <input type="submit" value="SYN"/>
+    <center><input type="submit" value="SYNC"/></center>
     </form>
     <script>
         window.onload = function action(){

@@ -40,7 +40,7 @@
     <div class="container">
         {% block content %}
         <p>Give Us Your Mysql Necessary Connection Credentials</p>
-        <form action="server_connection_status" autocomplete="off">
+        <form action="server_connection_status" autocomplete="off" method="post">
             {% csrf_token %}
             <label for="hostname">hostname:</label>
             <input type="text" id="hostname" name="hostname" required>

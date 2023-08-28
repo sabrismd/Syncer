@@ -1,10 +1,6 @@
-import mysql.connector as mc
-
-connection = mc.connect(host="localhost", user="root", password="S@bri2019", db="smartsheets")
-cursor = connection.cursor()
-cursor.execute("SHOW TABLES")
-
-tables = {'table': []}
-for x in cursor:
-    tables['table'].append(x[0])
-print(tables)
+import smartsheet as ss 
+client=ss.Smartsheet("247qiwFXuBSRQRR7HafYDjdoQxQWrIE7l6t4V")
+sheet=client.Sheets.list_sheets(include_all=True)
+for sh in sheet.data:
+    if sh.name=='tentries':
+        print(sh.id)

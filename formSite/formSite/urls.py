@@ -20,13 +20,14 @@ from formApp import views
 
 urlpatterns = [
     path('',views.home),
-    path('admin/', admin.site.urls),
-    path('display_token/', views.display_token),
-    path('display_token/sheet_user/',views.display_sheet_user),
-    path('server_details/',views.server_details),
-    path('server_details/server_connection_status/',views.server_connection),
-    path('database_details/',views.tables),
-    path('database_details/selected/',views.selected)
+    path('admin', admin.site.urls),
+    path('display_token', views.display_token),
+    path('sheet_user',views.display_sheet_user),
+    path('server_details',views.server_details),
+    path('server_connection_status',views.server_connection),
+    path('database_details',views.tables),
+    path('selected',views.selected),
+    path('confirm_sync',views.sync),
 ]
 
 
