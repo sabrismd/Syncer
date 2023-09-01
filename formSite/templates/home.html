@@ -39,7 +39,7 @@
 <body>
     <div class="container">
         {% block content %}
-        <form action="display_token" autocomplete="off" method="post">
+        <form action="display_token" autocomplete="on" method="post">
             {% csrf_token %}
             <label for="accesstoken">ACCESSTOKEN:</label>
             <input type="text" id="token" name="token" required>

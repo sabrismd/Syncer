@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No need to update</title>
+    <style>
+        .hide{
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        No Need To Update ! All cells are up-to-date
+    </h1>
+    
+        <div class="hide" id="tab_list">
+            {% for ta in tab_rows.irows %}
+            {{ta}}
+            {% endfor %}
+        </div>
+    
+        <div class="hide" id="sh_list">
+            {% for sh in sh_rows.irows %}
+            {{sh}}
+            {% endfor %}
+        </div>
+        <dialog id="d">
+            <p>click ok to go homepage </p>
+            <button onclick="home()">ok
+            </button>
+            <button onclick="d.close()">STAY here
+            </button>
+    
+        </dialog>
+        
+    
+<script>
+    window.onload =function action(){
+        let tab=document.querySelector("#tab_list").textContent;
+        tab=tab.trim();
+        let sh=document.querySelector("#sh_list").textContent;
+        sh=sh.trim();
+        const arr1=tab.split(" ");
+        const arr2=sh.split(" ");
+        let flag = 1;
+        for(var i=0;i<arr1.length;i++){
+            if (arr1[i] !== arr2[i]){
+                flag=0;
+                break;
+            }
+        }
+        if(flag==0){
+            alert("Looks like your sheet rows hasn't sorted properly! Please click Ok to Sort");
+            sort();
+        }
+        else{
+            d.showModal()
+
+        }
+
+        
+    }
+    function sort(){
+        window.location.href="http://127.0.0.1:8000/sort";
+    }
+    function home(){
+        window.location.href="http://127.0.0.1:8000/"
+    }
+</script>
+</body>
+</html>

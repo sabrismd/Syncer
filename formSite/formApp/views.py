@@ -67,6 +67,27 @@ def tables(request):
     }
     return render(request,"database_details.html",context=context)
 
+def create_sheet(request):
+    Table=request.POST["nmb"]
+    cursor = connection.cursor()
+    query = f"SHOW COLUMNS FROM {Table}"
+    cursor.execute(query)
+    column_title = [column[0] for column in cursor.fetchall()]
+    # to create a sheet
+    sheet_specifications = ss.models.Sheet()
+    sheet_specifications.name=Table
+    prim = True
+    for i in column_title:
+        col = ss.models.Column()
+        col.title=i
+        col.type = 'TEXT_NUMBER'
+        col.primary=prim
+        prim = False
+        sheet_specifications.columns.append(col)
+    res=client.Home.create_sheet(sheet_specifications)
+    return render(request,"createsheet.html")
+    
+
 def selected(request):
     global tab,sh
     tab=request.POST["tab"]
@@ -142,6 +163,16 @@ def sync(request):
     sheet=client.Sheets.get_sheet(sheet_id)
     dfRows = [str(row[0]) for _, row in df.iterrows()]
     sheetrows = [str(rows.cells[0].value) for rows in sheet.rows]
+    tab_rows={'irows':[]}
+    for i in range(len(dfRows)):
+        tab_rows["irows"].append(dfRows[i])
+    sh_rows={'irows':[]}
+    for j in range(len(sheetrows)):
+        sh_rows["irows"].append(sheetrows[j])
+    context={
+        'tab_rows':tab_rows,
+        'sh_rows':sh_rows,
+    }
     for x in dfRows:
         if x not in sheetrows:
             insert(x,df,sheet_id,sheet)
@@ -150,17 +181,59 @@ def sync(request):
     for y in sheetrows:
         if y not in dfRows:
             delete(y,df,sheet_id,sheet)
+
     if isInsert and isDelete and isUpdate:
-        return HttpResponse("<h1>Rows inserted/deleted/updated to the sheet</h1>")
+        isInsert=False
+        isUpdate=False
+        isDelete=False
+        return render(request,"riud.html",context=context)
     elif isInsert:
-        return HttpResponse("<h1>Rows inserted to the sheet</h1>")
+        isInsert=False
+        return render(request,"insert.html",context=context)
     elif isDelete:
-        return HttpResponse("<h1>Rows deleted from the sheet</h1>")
+        isDelete=False
+        return render(request,"delete.html",context=context)
     elif isUpdate:
-        return HttpResponse("<h1>Rows updated to the sheet</h1>")
+        isUpdate=False
+        return render(request,"update.html",context=context)
     else:
-        return HttpResponse("<h1>No Need To Update</h1>")
-            
+        return render(request,"nnu.html",context=context)
+    
+def sort(request):
+    for col in sheet.columns:
+        a = col.id
+        break
+    for row in sheet.rows:
+        c = ss.models.Cell()
+        c.column_id=a
+        c.value=float(row.cells[0].value)
+        r = ss.models.Row()
+        r.id=row.id
+        r.cells.append(c)
+        client.Sheets.update_rows(sheet_id, [r])
+
+    sort_specifier = ss.models.SortSpecifier({
+        'sort_criteria': [ss.models.SortCriterion({
+            'column_id': a,
+            'direction': 'ASCENDING'
+        })]
+    })
+    client.Sheets.sort_sheet(sheet_id, sort_specifier)
+
+    # why this typecasting is, for sorting i converted the initial row values to int.
+    # this will make conflicts to other operation again insertion may happen because its converted
+    # so that i am typecasting back to its original type that  is string [string-->int-->string]   
+    for row in sheet.rows:
+        c = ss.models.Cell()
+        c.column_id=a
+        c.value=str(row.cells[0].value).split('.')[0]
+        r = ss.models.Row()
+        r.id=row.id
+        r.cells.append(c)
+        client.Sheets.update_rows(sheet_id, [r])
+    return render(request,"success_sort.html",{'name':sheet.name})
+
+             
     
 
 

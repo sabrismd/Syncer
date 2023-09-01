@@ -28,6 +28,8 @@ urlpatterns = [
     path('database_details',views.tables),
     path('selected',views.selected),
     path('confirm_sync',views.sync),
+    path('sort',views.sort),
+    path('create_sheet',views.create_sheet),
 ]
 
 

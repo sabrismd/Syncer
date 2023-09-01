@@ -5,8 +5,44 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>server-status</title>
+        <script>
+            let res = "";
+            window.onload = function action(){
+                alert("To Sync .. Please Select Only One from Your Table and Please Select Only One from Your Sheets")
+                alert("Remember : You could Sync One By One")
+                alert("Please find the SYNC button in the bottom , To Process")
+            }
+            function tabSelect(val){
+                let li=Array.from(document.querySelectorAll(".shlist"))
+                let flag = 0;
+                for(var  i=0;i<li.length;i++){
+                    if(li[i].value == val){
+                        flag = 1;
+                        break;
+                    }
+                }
+                if (flag==0){
+                    d.showModal()
+                    res = val;
+                    document.getElementById("bold").textContent = val;
+                    document.getElementById("bold1").value = val;
+                }            
+            }
+            function gosheet(){
+                window.location.href="http://127.0.0.1:8000/create_sheet"
+            }
+            
+        </script>
     </head>
     <body>
+        <dialog id="d">
+            <p>The selected Table <b id="bold" ></b> is not yet created at your smartsheet sheets</p>
+            <p>please click ok to create a sheet in your sheets folder</p> 
+            <form action="create_sheet" method="post">
+                <input id="bold1" name="nmb" type="text" hidden>
+                <input type="submit" value="ok"></form>
+
+        </dialog>
     <form action="selected" method="post">
         <div style="
     display: grid;
@@ -20,7 +56,7 @@
         background-color: white;">
             <h1>Your Tables</h1>
             {% for tab in tables.table %}
-            <input type="radio" name="tab" value="{{tab}}"/>{{tab}}<br>
+            <input onclick="tabSelect(value)" id="{{tab}}" type="radio" name="tab" value="{{tab}}"/>{{tab}}<br>
             {% endfor %}
         </div>
         <div style="border: 1px solid black;
@@ -28,19 +64,11 @@
         background-color: white;">
             <h2>Your Sheets</h2>
             {% for sh in sheets.sheet %}
-            <input type="radio" name="sh" value="{{sh}}"/>{{sh}}<br>
+            <input  class="shlist" type="radio" name="sh" value="{{sh}}"/>{{sh}}<br>
             {% endfor %}
         </div>
     </div>
     <center><input type="submit" value="SYNC"/></center>
     </form>
-    <script>
-        window.onload = function action(){
-            alert("To Sync .. Please Select Only One from Your Table and Please Select Only One from Your Sheets")
-            alert("Remember : You could Sync One By One")
-            alert("Please find the SYNC button in the bottom , To Process")
-        }
-    </script>
-
     </body>
 </html>
