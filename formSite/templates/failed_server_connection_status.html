@@ -1,8 +1,45 @@
-<!DOCTYPE html>
-<head>
-    <title>server-status</title>
-</head>
-<body>
-    <h1>Can't Connect To a Database, Please Check Your host/userName/pwd/databaseName and Ensure started the mysql server </h1>
-</body>
-</html>
+
+    <!-- <h1> and  </h1> -->
+
+    <!DOCTYPE html>
+    <html>
+        {% load static %}
+    <head>
+        <title>Failed Connection</title>
+        <meta name="viewport" content="width=device-width",initial-scale="1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        <style>
+            body{
+                background-image: url("https://media.giphy.com/media/iF3M9gPPCdulq/giphy.gif");
+            }
+            form{
+                background-color: rgb(116, 116, 116);
+                border-radius: 20px;
+                opacity:80%;
+                text-align: center;
+            }
+            h1{
+                color:rgb(200, 0, 0);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container mt-0 min-vh-100 d-flex justify-content-center align-items-center">   
+        {% block content %}
+        <form>
+        <h1 class="fs-1">
+            Can't Connect To a Server/Database, Please Check Your Host/UserName/Pwd/DatabaseName
+        </h1><br>
+        <h1 class="fs-1">Please Ensure started the mysql server and Click Re-Connect To connect again</h1>
+        <center><button class="mt-5 btn btn-primary" type="button" onclick="homepage()">Re-Connect</button></center>
+        </form>
+        {% endblock %}
+    </div>
+    </body>
+        <script>
+            function homepage(){
+                window.location.href ="http://127.0.0.1:8000/server_details"
+            }
+        </script>
+    </body>
+    </html>

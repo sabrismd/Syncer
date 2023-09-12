@@ -4,6 +4,7 @@ import smartsheet as ss
 import mysql.connector as mc
 import warnings
 import pandas as pd
+import pyautogui
 
 warnings.filterwarnings("ignore",category=UserWarning)
 
@@ -22,7 +23,7 @@ def display_token(request):
         inf = {'tok': token}
         return render(request, 'result.html', context=inf)
     else:
-        return HttpResponse("Token not provided")
+        return HttpResponse("<h1>Token not provided</h1>")
 
 def display_sheet_user(request):
     global client
@@ -32,8 +33,9 @@ def display_sheet_user(request):
         return render(request,"access_token_error.html")
     else:
         accountId=user_profile.account.id
-        accountName=user_profile.account.name
-        acc={'id':accountId,'name':accountName}
+        accountName1=user_profile.first_name
+        accountName2=user_profile.last_name
+        acc={'id':accountId,'fname':accountName1,'lname':accountName2}
         return render(request,"sheet_user.html",context=acc)
       
 def server_details(request):
@@ -45,17 +47,22 @@ def server_connection(request):
     user=request.POST["username"]
     pwd=request.POST["password"]
     dbname=request.POST["databasename"]
-    connection=mc.connect(host=host,user=user,password=pwd,db=dbname)
-    if connection.is_connected():
+    try:
+        connection=mc.connect(host=host,user=user,password=pwd,db=dbname)
         return render(request,"success_server_connection_status.html")
-    else:
+    except mc.errors.DatabaseError as e:
         return render(request,"failed_server_connection_status.html")
     
 def tables(request):
+    global sheet
     sheet=client.Sheets.list_sheets(include_all=True)
     sheets={'sheet':[]}
     for j in sheet.data:
         sheets['sheet'].append(j.name)
+    # workspace=client.Workspaces.list_workspaces(include_all=True)
+    # workspaces={'ws':[]}
+    # for l in workspaces.data:
+    #     workspaces['ws'].append(l.name)
     cursor=connection.cursor()
     cursor.execute("SHOW TABLES")
     tables = {'table': []}
@@ -64,18 +71,55 @@ def tables(request):
     context={
         'sheets':sheets,
         'tables':tables,
+        # 'workspaces':workspaces,
     }
     return render(request,"database_details.html",context=context)
 
 def create_sheet(request):
-    Table=request.POST["nmb"]
+    global selectedTable,workspace
+    selectedTable=request.POST["nmb"]
+    workspace=client.Workspaces.list_workspaces(include_all=True)
+    workspaces={'ws':[]}
+    for l in workspace.data:
+        workspaces['ws'].append(l.name)
+    context={'workspaces':workspaces,'table':selectedTable}
+    return render(request, "wtc.html",context=context)
+    
+def sheetinworkspace(request):
+    global selectedTable,workspace
+    space=request.POST["workspace"]
+    w_id=''
+    for w in workspace.data:
+        if w.name==space:
+            w_id=w.id
     cursor = connection.cursor()
-    query = f"SHOW COLUMNS FROM {Table}"
+    query = f"SHOW COLUMNS FROM {selectedTable}"
     cursor.execute(query)
     column_title = [column[0] for column in cursor.fetchall()]
-    # to create a sheet
+    # # to create a sheet
     sheet_specifications = ss.models.Sheet()
-    sheet_specifications.name=Table
+    sheet_specifications.name=selectedTable
+    prim = True
+    for i in column_title:
+         col = ss.models.Column()
+         col.title=i
+         col.type = 'TEXT_NUMBER'
+         col.primary=prim
+         prim = False
+         sheet_specifications.columns.append(col)
+    wspace=client.Workspaces.create_sheet_in_workspace(w_id,sheet_specifications)
+    cont={'sheet':selectedTable,'workspace':space}
+    return render(request,"wp.html",context=cont)
+
+def sheetinsheets(request):
+    global selectedTable
+    cursor = connection.cursor()
+    query = f"SHOW COLUMNS FROM {selectedTable}"
+    cursor.execute(query)
+    column_title = [column[0] for column in cursor.fetchall()]
+    # # to create a sheet
+    sheet_specifications = ss.models.Sheet()
+    sheet_specifications.name=selectedTable
     prim = True
     for i in column_title:
         col = ss.models.Column()
@@ -85,8 +129,9 @@ def create_sheet(request):
         prim = False
         sheet_specifications.columns.append(col)
     res=client.Home.create_sheet(sheet_specifications)
-    return render(request,"createsheet.html")
-    
+    cont={'sheet':selectedTable}
+    return render(request,"createsheet.html",context=cont)
+
 
 def selected(request):
     global tab,sh
@@ -198,6 +243,28 @@ def sync(request):
         return render(request,"update.html",context=context)
     else:
         return render(request,"nnu.html",context=context)
+
+def matching(request):
+    global sheet
+    global connection
+    cursor=connection.cursor()
+    query=f"SHOW COLUMNS FROM {tab}"
+    cursor.execute(query)
+    sheet_id=''
+    for sh in sheet.data:
+        if sh.name==tab:
+            sheet_id=sh.id
+    sheet_obj=client.Sheets.get_sheet(sheet_id)
+    
+    table_columns=[ columns[0] for columns in cursor.fetchall()]
+    sheet_columns=[col.title for col in sheet_obj.columns]
+    if table_columns==sheet_columns:
+        return render(request,"success_match.html")
+    else:
+        return HttpResponse("<h1>Your table and sheet columns are not matching</h1>")
+
+def closetab(request):
+    pyautogui.hotkey('ctrl','w')
     
 def sort(request):
     for col in sheet.columns:

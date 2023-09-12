@@ -1,40 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
-    {% load static %}
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>server-status</title>
-        <script>
-            let res = "";
-            window.onload = function action(){
-                alert("To Sync .. Please Select Only One from Your Table and Please Select Only One from Your Sheets")
-                alert("Remember : You could Sync One By One")
-                alert("Please find the SYNC button in the bottom , To Process")
-            }
-            function tabSelect(val){
-                let li=Array.from(document.querySelectorAll(".shlist"))
-                let flag = 0;
-                for(var  i=0;i<li.length;i++){
-                    if(li[i].value == val){
-                        flag = 1;
-                        break;
-                    }
-                }
-                if (flag==0){
-                    d.showModal()
-                    res = val;
-                    document.getElementById("bold").textContent = val;
-                    document.getElementById("bold1").value = val;
-                }            
-            }
-            function gosheet(){
-                window.location.href="http://127.0.0.1:8000/create_sheet"
-            }
+<html>
+    <!-- {% load static %} -->
+<head>
+    <title>Tables And Sheets</title>
+    <meta name="viewport" content="width=device-width",initial-scale="1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        body{
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+        }
+        .row{
             
-        </script>
-    </head>
-    <body>
+            margin-top: 30px;
+            height:100vh;
+            column-gap: 100px;
+            margin-bottom: 400px;
+        }
+        #d{
+            border-radius:10px;
+            padding-top:100px;
+            height:50vh;
+            width:70%;
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+            text-align: center;
+            align-items: center;
+        }
+        #col1{
+            margin-bottom: 30px;
+            margin-left: 30px;
+        }
+        #col2{
+
+            margin-bottom: 30px;
+            margin-right: 30px;
+        }
+        #syn{
+            border-radius:5px;
+            background-color: rgb(84, 177, 206);
+        }
+        #k{
+            border-radius: 5px;
+            padding-left:20px;
+            padding-right:20px;
+            padding-top:5px;
+            padding-bottom:5px;
+            background-color: rgb(52, 137, 248);
+        }
+        #bt{
+            border-radius: 5px;
+            background-color: rgb(52, 137, 248);
+            margin-left: 40px;
+            padding-left:16px;
+            padding-right:16px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container min-vh-100">
+    {% block content %}
+    <dialog id="d">
+        <b class="fs-4">The selected Table <b id="bold" ></b> is not yet created at your smartsheet sheets</b><br>
+        <b class="fs-4">please click <b>create</b> to create a sheet</b> 
+        <form action="create_sheet" method="post">
+            <input id="bold1" name="nmb" type="text" hidden>
+            <input class="mt-5" type="submit" value="Create" id="k">
+            <button id="bt" class="mt-5" type="button" onclick="d.close()">Cancel</button>
+        </form>
+
+
+    </dialog>
+    <h1 class="mt-5 text-center">Select Table and Sheet To Merge</h1>
+    <h2 class="mt-2 text-center">After Selected Click the SYNC Button</h2>
+    <form action="selected" method="post">
+        <center><input class="fs-2 mt-3 mb-0" id="syn" type="submit" value="SYNC"/></center>
+        <div class="row">
+             
+            <div class="col" id="col1">
+                <div class="p-3 fs-3 text-center text-decoration-underline">Your Tables</div>
+            {% for tab in tables.table %}
+            <b><input onclick="tabSelect(value)" id="{{tab}}" type="radio" name="tab" value="{{tab}}" id="r1" required/>  > {{tab}}  <br></b>
+            {% endfor %}
+            </div>
+            <div class="col" id=col2>
+                <div class="p-3 fs-3 text-bold text-center text-decoration-underline">Your Sheets</div>
+                {% for sh in sheets.sheet %}
+                <b><input class ="shlist" type="radio" name="sh" id="r2" value="{{sh}}" required/>     > {{sh}}  <br></b>
+              {% endfor %}
+            </div>
+        </div>
+    </form>
+    {% endblock %}
+</div>
+<script>
+    let res = "";
+    // window.onload = function action(){
+    //     alert("To Sync .. Please Select Only One from Your Table and Please Select Only One from Your Sheets")
+    //     alert("Remember : You could Sync One By One")
+    //     alert("Please find the SYNC button in the bottom , To Process")
+    // }
+    function tabSelect(val){
+        let li=Array.from(document.querySelectorAll(".shlist"))
+        let flag = 0;
+        for(var  i=0;i<li.length;i++){
+            if(li[i].value == val){
+                flag = 1;
+                break;
+            }
+        }
+        if (flag==0){
+            d.showModal()
+            res = val;
+            document.getElementById("bold").textContent = val;
+            document.getElementById("bold1").value = val;
+        }            
+    }
+    function gosheet(){
+        window.location.href="http://127.0.0.1:8000/create_sheet"
+    }
+    
+</script>
+</body>
+</html>
+
+
+    <!--<body>
         <dialog id="d">
             <p>The selected Table <b id="bold" ></b> is not yet created at your smartsheet sheets</p>
             <p>please click ok to create a sheet in your sheets folder</p> 
@@ -44,13 +136,7 @@
 
         </dialog>
     <form action="selected" method="post">
-        <div style="
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin-bottom: 20px;
-    column-gap: 20px;
-    background-color: darkviolet;
-    ">
+        
         <div style="border: 1px solid black;
         padding-left: 20px;
         background-color: white;">
@@ -71,4 +157,4 @@
     <center><input type="submit" value="SYNC"/></center>
     </form>
     </body>
-</html>
+</html> -->

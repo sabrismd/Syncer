@@ -5,38 +5,85 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetSort</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <title>Sheet Sort</title>
     <style>
+        body{
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+        }
+         .main{
+            margin: 0;
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+            height:100vh;
+        }
         .hide{
-            visibility: hidden;
+            display: none;
+        }
+        .animated-heading1{
+            align-items: center;
+            text-align: center;
+            position:relative;
+            right:-100%;
+            animation: slideIn1 1s forwards;
+        }
+        @keyframes slideIn1{
+            to{
+                right:0;
+            }
+        }
+        #d{
+            border-radius:10px;
+            padding-top:100px;
+            height:50vh;
+            width:70%;
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+            text-align: center;
+            align-items: center;
+        }
+        button{
+            margin-top: 15px;
+            margin-right: 40px;
+            background-color: rgb(14, 163, 231);
         }
     </style>
 </head>
 <body>
-    <h1>
-        sheet {{name}} has sorted in an ascending order row wise
-    </h1>
     <dialog id="d">
-        <p>click ok to </p>
-        <button onclick="home()">ok
+        <h1>Syncing Finished</h1>
+        <button onclick="home()">Continue Sync
         </button>
-        <button onclick="d.close()">STAY here
+        <button onclick="closewind()">Close The Application 
         </button>
 
     </dialog>
-
+    <div class="main container d-flex justify-content-center align-items-center"><form>
+        <h1 class="text-center animated-heading1">Sheet {{sh}} Sorted in an ascending order wise</h1>
+    </form></div>
     
+            
+    
+    
+    
+        
         
     
 <script>
-    window.onload =function action(){
-        //alert("Thank You for syncing here, please click ok to take you to the home page");
-        d.showModal();
+    function closewind(){
+        window.location.href="http://127.0.0.1:8000/close"
     }
-    function home(){
-        window.location.href="http://127.0.0.1:8000/"
+    window.onload = function vas() {
+        setTimeout(action,7000)
     }
 
+
+    
+    function home(){
+        window.location.href="http://127.0.0.1:8000/database_details"
+    }
+    function action(){
+        d.showModal()   
+    }
 </script>
 </body>
 </html>

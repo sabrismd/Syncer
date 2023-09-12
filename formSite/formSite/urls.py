@@ -27,9 +27,13 @@ urlpatterns = [
     path('server_connection_status',views.server_connection),
     path('database_details',views.tables),
     path('selected',views.selected),
-    path('confirm_sync',views.sync),
+    path('confirm_sync',views.matching),
+    path('merge',views.sync),
     path('sort',views.sort),
     path('create_sheet',views.create_sheet),
+    path('createsheetworkspace',views.sheetinworkspace),
+    path('createsheetsheets',views.sheetinsheets),
+    path('close/',views.closetab),
 ]
 
 

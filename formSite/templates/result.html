@@ -2,47 +2,46 @@
 <html>
     {% load static %}
 <head>
-    <title>Result</title>
+    <title>Merger [ Mysql-->SmartSheet]</title>
     <meta name="viewport" content="width=device-width",initial-scale="1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <style>
-    body {
-        background-color:darkslateblue;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; /* Set the container to occupy the full viewport height */
-    }
-    
-    .container {
-        background-color:lightslategrey;
-        width: 350px; /* Adjust this value as per your design */
-        border: 1px solid #ccc;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    
-    button {
-        width: 100%;
-        background-color: green;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    </style>
+        body{
+            background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
+        }
+        .animated-heading1{
+            position:relative;
+            left:-100%;
+            animation: slideIn1 1s forwards;
+        }
+        .animated-heading2{
+            position:relative;
+            right:-100%;
+            animation: slideIn2 1.5s forwards;
+        }
+        @keyframes slideIn1{
+            to{
+                left:0;
+            }
+        }
+        @keyframes slideIn2{
+            to{
+                right:0;
+            }
+        }
 
+    </style>
 </head>
 <body>
-    <div class="container">
-        <form action="sheet_user" method="post">
-            <h2>
-                Thank You
-            </h2>
-            <p>Your Sheet AcccesToken Has Been Submitted SuccessFully</p>
-            <p>please click "ok" to connect with your smartsheet </p>
-            <p>and also,</p>
-            <button type="submit">Ok</button>
-        </form>
-    </div>
+    <div class="container min-vh-100 d-flex justify-content-center align-items-center">
+    {% block content %}
+    <form action="sheet_user" method="post">
+        {% csrf_token %}
+        <h1 class="animated-heading1">Yeah ! I got Your Token</h1>
+        <h1 class="animated-heading2">Please Click Ok to connect to your smartsheet</h1>
+        <center><button type="submit" class="btn btn-primary">O K</button></center>
+      </form>
+    {% endblock %}
+</div>
 </body>
 </html>
