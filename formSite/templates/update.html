@@ -46,6 +46,58 @@
             margin-right: 40px;
             background-color: rgb(14, 163, 231);
         }
+        .dots {
+list-style: none;
+display: flex;
+}
+
+.dots div {
+height: 15px;
+width: 15px;
+border-radius: 50%;
+margin: 0 5px;
+background-color: #010405;
+--webkit-animation: bounce 1s infinite alternate;
+--moz-animation: bounce 1s infinite alternate;
+--o-animation: bounce 1s infinite alternate;
+animation: bounce 1s infinite alternate;
+}
+
+@-webkit-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@-moz-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@-o-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+.dots div:nth-child(2) {
+animation-delay: 300ms;
+}
+
+.dots div:nth-child(3) {
+animation-delay: .6s;
+}
     </style>
 </head>
 <body>
@@ -69,7 +121,15 @@
 
     </dialog>
     <div class="main container d-flex justify-content-center align-items-center"><form>
-        <h1 class="text-center animated-heading1">Rows / Cells Updated in the Sheet</h1>
+        <h1 class="text-center animated-heading1">Rows / Cells Updated in the Sheet</h1><br>
+        <div class="dots align-items-center justify-content-center">
+            <div></div>
+            <div></div>
+            <div></div>
+            
+        </div>
+        <div class="text-center mt-3"><h6>Please Wait</h6></div>
+           
     </form></div>
     
             

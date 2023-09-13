@@ -142,8 +142,11 @@ def selected(request):
 
 def insert(a,df,sheet_id,sheet):
     global isInsert
+    tableLists=[str(row[0]) for _,row in df.iterrows()]
+    print(tableLists)
     columns=sheet.columns
     initial_column=df.columns[0]
+    print(initial_column)
     row_values = df[df[initial_column] == int(a)].values.tolist()
     cells = []
     col_ids = [col.id for col in columns]

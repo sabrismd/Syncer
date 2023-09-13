@@ -10,6 +10,58 @@
         body{
             background:linear-gradient(rgb(84, 177, 206),rgb(240, 53, 53));
         }
+        .dots {
+list-style: none;
+display: flex;
+}
+
+.dots div {
+height: 15px;
+width: 15px;
+border-radius: 50%;
+margin: 0 5px;
+background-color: #010405;
+--webkit-animation: bounce 1s infinite alternate;
+--moz-animation: bounce 1s infinite alternate;
+--o-animation: bounce 1s infinite alternate;
+animation: bounce 1s infinite alternate;
+}
+
+@-webkit-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@-moz-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@-o-keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+@keyframes bounce {
+to {
+    opacity: .2;
+    transform: translateY(-20px);
+}
+}
+
+.dots div:nth-child(2) {
+animation-delay: 300ms;
+}
+
+.dots div:nth-child(3) {
+animation-delay: .6s;
+}
     </style>
 </head>
 <body>
@@ -18,9 +70,15 @@
     {% block content %}
     <form>
         <h5>The sheet <b>{{sheet}}</b> Is Created in the <b>{{workspace}}</b> Workspace</h5><br>
-        <h5>Now You can sync Your Records</h5>
+            <h5>Now You can sync Your Records</h5><br>
+            <div class="dots align-items-center justify-content-center">
+                <div></div>
+                <div></div>
+                <div></div>
+                
+            </div>
+            <div class="text-center mt-3"><h6>Please Wait</h6></div>
     </form>
-   
     {% endblock %}
 </div>
 
