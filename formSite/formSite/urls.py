@@ -29,7 +29,6 @@ urlpatterns = [
     path('selected',views.selected),
     path('confirm_sync',views.matching),
     path('merge',views.sync),
-    path('sort',views.sort),
     path('create_sheet',views.create_sheet),
     path('createsheetworkspace',views.sheetinworkspace),
     path('createsheetsheets',views.sheetinsheets),

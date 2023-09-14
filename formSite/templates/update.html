@@ -101,17 +101,6 @@ animation-delay: .6s;
     </style>
 </head>
 <body>
-    <div class="hide" id="tab_list">
-        {% for ta in tab_rows.irows %}
-        {{ta}}
-        {% endfor %}
-    </div>
-
-    <div class="hide" id="sh_list">
-        {% for sh in sh_rows.irows %}
-        {{sh}}
-        {% endfor %}
-    </div>
     <dialog id="d">
         <h1>Syncing Finished</h1>
         <button onclick="home()">Continue Sync
@@ -146,35 +135,11 @@ animation-delay: .6s;
     window.onload = function vas() {
         setTimeout(action,7000)
     }
-
-
-    function sort(){
-        window.location.href="http://127.0.0.1:8000/sort";
-    }
     function home(){
         window.location.href="http://127.0.0.1:8000/database_details"
     }
     function action(){
-        let tab=document.querySelector("#tab_list").textContent;
-        tab=tab.trim();
-        let sh=document.querySelector("#sh_list").textContent;
-        sh=sh.trim();
-        const arr1=tab.split(" ");
-        const arr2=sh.split(" ");
-        let flag = 1;
-        for(var i=0;i<arr1.length;i++){
-            if (arr1[i] !== arr2[i]){
-                flag=0;
-                break;
-            }
-        }
-        if(flag==0){
-            alert("Looks like your sheet rows hasn't sorted properly! Please click Ok to Sort");
-            sort();
-        }
-        else{
-            d.showModal()
-        }
+        d.showModal()
     }
 </script>
 </body>

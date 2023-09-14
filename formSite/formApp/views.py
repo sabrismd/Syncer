@@ -59,10 +59,6 @@ def tables(request):
     sheets={'sheet':[]}
     for j in sheet.data:
         sheets['sheet'].append(j.name)
-    # workspace=client.Workspaces.list_workspaces(include_all=True)
-    # workspaces={'ws':[]}
-    # for l in workspaces.data:
-    #     workspaces['ws'].append(l.name)
     cursor=connection.cursor()
     cursor.execute("SHOW TABLES")
     tables = {'table': []}
@@ -71,7 +67,6 @@ def tables(request):
     context={
         'sheets':sheets,
         'tables':tables,
-        # 'workspaces':workspaces,
     }
     return render(request,"database_details.html",context=context)
 
@@ -142,24 +137,48 @@ def selected(request):
 
 def insert(a,df,sheet_id,sheet):
     global isInsert
-    tableLists=[str(row[0]) for _,row in df.iterrows()]
-    print(tableLists)
-    columns=sheet.columns
     initial_column=df.columns[0]
-    print(initial_column)
+    sibling_id='' 
     row_values = df[df[initial_column] == int(a)].values.tolist()
-    cells = []
-    col_ids = [col.id for col in columns]
-    for i in range(len(col_ids)):
-        cell_value = row_values[0][i]
-        cell = ss.models.Cell()
-        cell.column_id=col_ids[i]
-        cell.value=str(cell_value)
-        cells.append(cell)
-    new_row = ss.models.Row()
-    new_row.cells = cells
-    client.Sheets.add_rows(sheet_id, [new_row])
-    isInsert=True
+    sheetLists=[row.cells[0].value for row in sheet.rows]
+    if sheetLists:
+        closest_match = min(sheetLists, key=lambda x: abs(int(x) - int(a)))
+        closest_match=str(closest_match)
+        columns=sheet.columns
+        for row in sheet.rows:
+            if row.cells[0].value==closest_match:
+                sibling_id=row.id
+    
+        cells = []
+        col_ids = [col.id for col in columns]
+        for i in range(len(col_ids)):
+            cell_value = row_values[0][i]
+            cell = ss.models.Cell()
+            cell.column_id=col_ids[i]
+            cell.value=str(cell_value)
+            cells.append(cell)
+        new_row = ss.models.Row()
+        new_row.sibling_id=sibling_id
+        new_row.cells = cells
+        if int(a)>int(closest_match):
+            new_row.above=False
+        else:
+            new_row.above=True 
+        client.Sheets.add_rows(sheet_id, [new_row])
+        isInsert=True
+    else:
+        cells = []
+        col_ids = [col.id for col in sheet.columns]
+        for i in range(len(col_ids)):
+            cell_value = row_values[0][i]
+            cell = ss.models.Cell()
+            cell.column_id=col_ids[i]
+            cell.value=str(cell_value)
+            cells.append(cell)
+        new_row = ss.models.Row()
+        new_row.cells = cells
+        client.Sheets.add_rows(sheet_id, [new_row])
+        isInsert=True
 
 def delete(b,df,sheet_id,sheet):
     global isDelete
@@ -211,16 +230,16 @@ def sync(request):
     sheet=client.Sheets.get_sheet(sheet_id)
     dfRows = [str(row[0]) for _, row in df.iterrows()]
     sheetrows = [str(rows.cells[0].value) for rows in sheet.rows]
-    tab_rows={'irows':[]}
-    for i in range(len(dfRows)):
-        tab_rows["irows"].append(dfRows[i])
-    sh_rows={'irows':[]}
-    for j in range(len(sheetrows)):
-        sh_rows["irows"].append(sheetrows[j])
-    context={
-        'tab_rows':tab_rows,
-        'sh_rows':sh_rows,
-    }
+    # tab_rows={'irows':[]}
+    # for i in range(len(dfRows)):
+    #     tab_rows["irows"].append(dfRows[i])
+    # sh_rows={'irows':[]}
+    # for j in range(len(sheetrows)):
+    #     sh_rows["irows"].append(sheetrows[j])
+    # context={
+    #     'tab_rows':tab_rows,
+    #     'sh_rows':sh_rows,
+    # }
     for x in dfRows:
         if x not in sheetrows:
             insert(x,df,sheet_id,sheet)
@@ -234,74 +253,42 @@ def sync(request):
         isInsert=False
         isUpdate=False
         isDelete=False
-        return render(request,"riud.html",context=context)
+        return render(request,"riud.html")
     elif isInsert:
         isInsert=False
-        return render(request,"insert.html",context=context)
+        return render(request,"insert.html")
     elif isDelete:
         isDelete=False
-        return render(request,"delete.html",context=context)
+        return render(request,"delete.html")
     elif isUpdate:
         isUpdate=False
-        return render(request,"update.html",context=context)
+        return render(request,"update.html")
     else:
-        return render(request,"nnu.html",context=context)
+        return render(request,"nnu.html")
 
 def matching(request):
-    global sheet
+    global sh,tab
     global connection
+    sheets=client.Sheets.list_sheets(include_all=True)
     cursor=connection.cursor()
     query=f"SHOW COLUMNS FROM {tab}"
     cursor.execute(query)
     sheet_id=''
-    for sh in sheet.data:
-        if sh.name==tab:
-            sheet_id=sh.id
+    context={'t':tab,'s':sh}
+    for v in sheets.data:
+        if v.name==sh:
+            sheet_id=v.id
     sheet_obj=client.Sheets.get_sheet(sheet_id)
-    
-    table_columns=[ columns[0] for columns in cursor.fetchall()]
+    table_columns=[columns[0] for columns in cursor.fetchall()]
     sheet_columns=[col.title for col in sheet_obj.columns]
     if table_columns==sheet_columns:
         return render(request,"success_match.html")
     else:
-        return HttpResponse("<h1>Your table and sheet columns are not matching</h1>")
+        return render(request,"mismatch.html",context=context)
 
 def closetab(request):
     pyautogui.hotkey('ctrl','w')
     
-def sort(request):
-    for col in sheet.columns:
-        a = col.id
-        break
-    for row in sheet.rows:
-        c = ss.models.Cell()
-        c.column_id=a
-        c.value=float(row.cells[0].value)
-        r = ss.models.Row()
-        r.id=row.id
-        r.cells.append(c)
-        client.Sheets.update_rows(sheet_id, [r])
-
-    sort_specifier = ss.models.SortSpecifier({
-        'sort_criteria': [ss.models.SortCriterion({
-            'column_id': a,
-            'direction': 'ASCENDING'
-        })]
-    })
-    client.Sheets.sort_sheet(sheet_id, sort_specifier)
-
-    # why this typecasting is, for sorting i converted the initial row values to int.
-    # this will make conflicts to other operation again insertion may happen because its converted
-    # so that i am typecasting back to its original type that  is string [string-->int-->string]   
-    for row in sheet.rows:
-        c = ss.models.Cell()
-        c.column_id=a
-        c.value=str(row.cells[0].value).split('.')[0]
-        r = ss.models.Row()
-        r.id=row.id
-        r.cells.append(c)
-        client.Sheets.update_rows(sheet_id, [r])
-    return render(request,"success_sort.html",{'name':sheet.name})
 
              
     
